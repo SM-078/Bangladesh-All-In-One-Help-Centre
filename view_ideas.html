@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Submitted Ideas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="logo-header">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="250" />
+  </header>
+  <h2>All Submitted Ideas</h2>
+
+  {% for user, topic, idea, contact in ideas %}
+    <div class="idea-box" style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 10px;">
+      <p><strong>User:</strong> {{ user }}</p>
+      <p><strong>Topic:</strong> {{ topic }}</p>
+      <p><strong>Idea:</strong> {{ idea }}</p>
+      <p><strong>Contact:</strong> {{ contact }}</p>
+    </div>
+  {% else %}
+    <p>No ideas submitted yet.</p>
+  {% endfor %}
+<ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('emergency_contact') }}">Emergency Contact</a></li>
+    <li><a href="{{ url_for('accident_support') }}">Accident Support</a></li>
+    <li><a href="{{ url_for('refugee_services') }}">Refugee Services</a></li>
+    <li><a href="{{ url_for('govt_helpcenters') }}">Government Help Centers</a></li>
+    <li><a href="{{ url_for('international_help') }}">International Help</a></li>
+    <li><a href="{{ url_for('sim_help') }}">SIM Help</a></li>
+    <li><a href="{{ url_for('quick_contact') }}">Quick Contact</a></li>
+    <li><a href="{{ url_for('add_idea') }}">Add New Idea</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+</ul>
+</body>
+</html>
+<footer>
+  <p>&copy; 2025 Bangladesh All-In-One Help Center. All rights reserved.</p>   
+</footer> 

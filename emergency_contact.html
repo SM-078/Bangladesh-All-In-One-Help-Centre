@@ -1,0 +1,44 @@
+<head>
+  <title>Emergency Contacts</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<h2>In emergency cases of flight or fight situations, call these:</h2>
+<ol>
+    <li><strong>Police and national emergencies:</strong><a href="tel:999">999</a></li>
+    <li><strong>Fire advice:</strong><a href="tel:199">199</a></li>
+    <li><strong>Ambulance:</strong><a href="tel:16263">16263</a></li>
+    <li><strong>Emergency Government Assistance:</strong><a href="tel:333">333</a></li>
+    <li><strong>National Helpline:</strong><a href="tel:106">106</a></li>       
+    <li><strong>Child Helpline:</strong><a href="tel:1098">1098</a></li>   
+    <li><strong>Health advice:</strong><a href="tel:16263">16263</a></li>  
+    <li><strong>Women and Children Help Line:</strong><a href="tel:109">109</a></li>
+    <li><strong>National Helpline for Mental Health:</strong><a href="tel:109">109</a></li>
+    <li><strong>National Helpline for agricultural issues:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Fisheries:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Livestock:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Education:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Health:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Environment:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Climate Change:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>National Helpline for Disaster Management:</strong><a href="tel:16123">16123</a></li>
+    <li><strong>Traffic Police (Dhaka):</strong><a href="tel:02-9330183">02-9330183</a></li>
+    <li><strong>Traffic Police (Chittagong):</strong><a href="tel:031-611-111">031-611-111</a></li>
+    <li><strong>Road Safety Hotline:</strong><a href="tel:16263">16263</a></li>
+    <li><strong>Ministry of Disaster Management:</strong><a href="tel:+880 2550-63057">+880 2550-63057</a></li>   
+    <li><strong>Refugee Relief and Repatriation Commissioner:</strong><a href="tel:+880 1730-335514">+880 1730-335514</a></li>
+</ol>
+<ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('accident_support') }}">Accident Support</a></li>
+    <li><a href="{{ url_for('refugee_services') }}">Refugee Services</a></li>
+    <li><a href="{{ url_for('govt_helpcenters') }}">Government Help Centers</a></li>
+    <li><a href="{{ url_for('sim_help') }}">SIM Help</a></li>
+    <li><a href="{{ url_for('international_help') }}">International Help</a></li>
+    <li><a href="{{ url_for('quick_contact') }}">Quick Contact</a></li>
+    <li><a href="{{ url_for('add_idea') }}">Add New Idea</a></li>
+    <li><a href="{{ url_for('view_ideas') }}">View All New Ideas</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+</ul>
+<footer>
+  <p>&copy; 2025 Bangladesh All-In-One Help Center. All rights reserved.</p>  
+</footer>

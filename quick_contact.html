@@ -1,0 +1,43 @@
+<head>
+  <title>Quick Contact</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class = "center-box">
+    <header class="logo-header">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="250" />
+    </header>
+    <h2>Quick Contact</h2>
+    <button onclick="alertHotline('999')"><a href="tel:999">Dial 999</a></button>
+    <button onclick="alertHotline('333')"><a href="tel:333">Dial 333</a></button>
+    <button onclick="alertHotline('106')"><a href="tel:106">Dial 106</a></button>
+    <button onclick="alertHotline('109')"><a href="tel:109">Dial 109</a></button>
+    <button onclick="alertHotline('1098')"><a href="tel:1098">Dial 1098</a></button>
+    <button onclick="alertHotline('16263')"><a href="tel:16263">Dial 16263</a></button>
+    <script>
+
+      function alertHotline(hotline) {
+        alert("Dialing " + hotline);
+      }
+    </script>
+  </div>
+<ul>
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('emergency_contact') }}">Emergency Contact</a></li>
+    <li><a href="{{ url_for('accident_support') }}">Accident Support</a></li>
+    <li><a href="{{ url_for('refugee_services') }}">Refugee Services</a></li>
+    <li><a href="{{ url_for('govt_helpcenters') }}">Government Help Centers</a></li>
+    <li><a href="{{ url_for('international_help') }}">International Help</a></li>
+    <li><a href="{{ url_for('sim_help') }}">SIM Help</a></li>
+    <li><a href="{{ url_for('add_idea') }}">Add New Idea</a></li>
+    <li><a href="{{ url_for('view_ideas') }}">View All New Ideas</a></li>
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+</ul>
+<p>Note: The above numbers are for immediate help and support from government services. For specific services, please refer to local authorities or government websites.</p>
+<p>For more information on quick contact services, you can visit the <a href="https://www.gov.bd/">Government of Bangladesh</a> website.</p>
+<p>For any other assistance, please contact your local government office or helpline.</p>
+    
+</body>
+<footer>
+  <p>&copy; 2025 Bangladesh All-In-One Help Center. All rights reserved.</p>
+</footer>

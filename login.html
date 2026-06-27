@@ -1,0 +1,29 @@
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-messages {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="center-box">
+    <header class="logo-header">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="250" />
+    </header>
+    <h2>Please enter your credentials to log in:</h2>
+    <h2>Login</h2>
+    <form method="post">
+      <input type="text" name="username" placeholder="Username"><br><br>
+      <input type="password" name="password" placeholder="Password"><br><br>
+      <button type="submit">Login</button>
+    </form>
+    <a href="/register">Not registered yet? Register Here</a>
+  </div>
+</body>
+
+<footer>
+<p>&copy; 2025 Bangladesh All-In-One Help Center. All rights reserved.</p>

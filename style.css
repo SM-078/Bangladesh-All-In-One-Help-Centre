@@ -1,0 +1,202 @@
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background-color: #58e66f;
+  color: #071075;
+  padding: 20px;
+  line-height: 2.0;
+  font-size: 25px;
+  text-align: center;
+}  
+ul li {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;/ /* spacing between links */
+}
+ol li {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;/* spacing between links */
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+input[type="text"],
+textarea {
+  font-size: 20px;
+  padding: 12px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  margin-bottom: 20px;  /* add spacing below inputs */
+}
+
+button {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  padding: 12px;
+  font-size: 25px;
+  background-color: rgb(242, 238, 237);
+  color: rgb(255, 0, 0);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 20px auto 0;  /* space above button, center horizontally */
+}
+.center-box {
+  .center-box {
+  height: auto; /* Let height be natural */
+  justify-content: flex-start; /* Align to top */
+  padding-top: 20px; /* optional spacing from top */
+}
+}
+input[type="text"],
+input[type="password"],
+textarea {
+  font-size: 20px;
+  padding: 12px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Make button text larger */
+header {
+  font-size: 28px;
+  text-align: center;
+  padding-bottom: 10px;
+  background-color: #f37a7a;
+  border-radius: 10px;
+  color: rgb(20, 20, 20);
+  padding: 10px;
+  border-radius: 100px;
+  box-shadow: 0 0 10px #ccc;
+  line-height: 2;
+  font-family: 'Times New Roman', Times, serif;
+  }
+
+section {
+  background: rgb(255, 204, 204);
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ccc;
+  font-size: 20px;
+}
+
+h2 {
+  color: #011f30;
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 5px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+h3 {
+  color: #011f30;
+  text-align: center;
+  font-size: 60px;
+  margin-bottom: 20px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+
+
+button {
+  padding: 10px 20px;
+  font-size: 32px;
+  background-color: rgb(242, 238, 237);
+  color: rgb(255, 0, 0);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  color: rgb(3, 8, 8);
+}
+footer p {
+  margin: 5px 0;
+  font-weight: bold;
+}       
+footer a {
+  color: #004d7a;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  body {
+      padding: 10px;
+  }
+  header, section {
+      padding: 15px;
+  }
+  button {
+      width: 100%;
+      margin-top: 10px;
+  }
+}
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+  div {
+    padding: 10px;
+  }
+}
+.logo-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 5px 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  width: fit-content; /* shrink wrap around image */
+}
+.idea-box {
+  background-color: #f76e6e;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  color: #222;
+}
+
+.flash-messages {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.flash-messages.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-left: 5px solid #28a745;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.flash-messages.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-left: 5px solid #dc3545;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
