@@ -42,13 +42,13 @@ def login():
             user = c.fetchone()
         if user:
             // 1. Get the current counter value from a text file
-            $counter = (int)file_get_contents("counter.txt");
+            counter = (int)file_get_contents("counter.txt");
 
             // 2. Increase the counter by 1
-            $counter = $counter + 1;
+            counter = counter + 1,
 
             // 3. Save the new counter value back to the file
-            file_put_contents("counter.txt", $counter);
+            file_put_contents("counter.txt", counter)
             echo "Registered successfully!"; 
 
             session['user'] = username
