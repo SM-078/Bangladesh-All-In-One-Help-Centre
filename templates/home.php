@@ -37,7 +37,6 @@
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
     <footer>
-        <p>Total Registered Users: <strong><?php echo file_get_contents("counter.txt"); ?></strong></p>
         <p>&copy; 2025 Bangladesh All-In-One Help Center. All rights reserved.</p>
     </footer>
 
