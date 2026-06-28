@@ -49,6 +49,7 @@ def login():
 
             // 3. Save the new counter value back to the file
             file_put_contents("counter.txt", $counter);
+            echo "Registered successfully!"; 
 
             session['user'] = username
             flash("Logged in successfully!", "success")
