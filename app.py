@@ -5,25 +5,17 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with something secure
 
-# --- Safe Counter Helper Function ---
-def get_live_count():
-    try:
-        if os.path.exists("counter.txt"):
-            with open("counter.txt", "r") as f:
-                return int(f.read().strip())
-    except Exception:
-        pass
-    return 0
-
 # --- Database Setup ---
 def init_db():
     with sqlite3.connect('database.db') as conn:
         c = conn.cursor()
+        # 1. Users Table
         c.execute('''CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         username TEXT UNIQUE,
                         password TEXT
                     )''')
+        # 2. Ideas Table
         c.execute('''CREATE TABLE IF NOT EXISTS ideas (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         user TEXT,
@@ -31,10 +23,37 @@ def init_db():
                         idea TEXT,
                         contact TEXT
                     )''')
+        # 3. Permanent Counter Table
+        c.execute('''CREATE TABLE IF NOT EXISTS site_stats (
+                        metric TEXT UNIQUE,
+                        value INTEGER
+                    )''')
+        # Initialize counter row at 0 if it doesn't exist yet
+        c.execute("INSERT OR IGNORE INTO site_stats (metric, value) VALUES ('login_count', 0)")
         conn.commit()
 
 # Run database creation automatically when script starts up
 init_db()
+
+# --- Permanent Database Counter Helpers ---
+def get_live_count():
+    try:
+        with sqlite3.connect('database.db') as conn:
+            c = conn.cursor()
+            c.execute("SELECT value FROM site_stats WHERE metric='login_count'")
+            row = c.fetchone()
+            return row[0] if row else 0
+    except Exception:
+        return 0
+
+def increment_live_count():
+    try:
+        with sqlite3.connect('database.db') as conn:
+            c = conn.cursor()
+            c.execute("UPDATE site_stats SET value = value + 1 WHERE metric='login_count'")
+            conn.commit()
+    except Exception:
+        pass
 
 
 # --- Routes ---
@@ -59,16 +78,8 @@ def login():
             session['user'] = username
             flash("Logged in successfully!", "success")
             
-            # --- FIXED COUNTER LOGIC ---
-            try:
-                with open("counter.txt", "r") as f:
-                    current_count = int(f.read().strip())
-            except Exception:
-                current_count = 0  
-            
-            with open("counter.txt", "w") as f: 
-                f.write(str(current_count + 1))
-            # ---------------------------
+            # --- DATABASE DRIVEN PERMANENT COUNTER ---
+            increment_live_count()
             
             return redirect(url_for('home'))
         else:
@@ -110,6 +121,7 @@ def home():
     if 'user' not in session:
         return redirect(url_for('login'))
         
+    # Read directly from the persistent database
     current_users = get_live_count()
     return render_template('home.html', total_users=current_users)
 
@@ -201,6 +213,5 @@ def view_ideas():
 
 
 if __name__ == '__main__':
-    # Dynamically find the port Render wants to use, fallback to 81 only for local laptop testing
     port = int(os.environ.get("PORT", 81))
     app.run(host='0.0.0.0', port=port, debug=True)
