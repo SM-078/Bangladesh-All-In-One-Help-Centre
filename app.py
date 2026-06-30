@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with something secure
 
-# --- Database Setup ---
+# --- Database Setup & Initialization ---
 def init_db():
     with sqlite3.connect('database.db') as conn:
         c = conn.cursor()
@@ -28,23 +28,26 @@ def init_db():
                         metric TEXT UNIQUE,
                         value INTEGER
                     )''')
-        # Initialize counter row at 0 if it doesn't exist yet
+        # Initialize counter row at 0 safely
         c.execute("INSERT OR IGNORE INTO site_stats (metric, value) VALUES ('login_count', 0)")
         conn.commit()
 
-# Run database creation automatically when script starts up
+# Run database schema verification when app boots
 init_db()
 
-# --- Permanent Database Counter Helpers ---
+# --- FIXED: Explicit Database Value Extraction ---
 def get_live_count():
     try:
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             c.execute("SELECT value FROM site_stats WHERE metric='login_count'")
             row = c.fetchone()
-            return row[0] if row else 0
+            # FIXED: row is a tuple like (5,). Extract the first element explicitly.
+            if row is not None:
+                return int(row[0])
     except Exception:
-        return 0
+        pass
+    return 0
 
 def increment_live_count():
     try:
@@ -65,22 +68,23 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
         
+        if not username or not password:
+            flash("Please fill out all credentials field fields.", "error")
+            return render_template('login.html')
+            
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
-            c.execute("SELECT * FROM users WHERE username=? AND password=?",
-                      (username, password))
+            c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
             user = c.fetchone()
             
-        if user:
+        # FIXED: Only processes success flag strictly if user credentials map to db records
+        if user is not None:
             session['user'] = username
             flash("Logged in successfully!", "success")
-            
-            # --- DATABASE DRIVEN PERMANENT COUNTER ---
             increment_live_count()
-            
             return redirect(url_for('home'))
         else:
             flash("Incorrect username or password", "error")
@@ -91,8 +95,12 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+
+        if not username or not password:
+            flash("Username and password cannot be empty.", "error")
+            return render_template('register.html')
 
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
@@ -100,11 +108,11 @@ def register():
             existing_user = c.fetchone()
 
             if existing_user:
-                flash(" User already exists, please re-enter", "error")
+                flash("User already exists, please re-enter", "error")
             else:
                 c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
                 conn.commit()
-                flash(" Registered successfully! Please log in.", "success")
+                flash("Registered successfully! Please log in.", "success")
                 return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -121,7 +129,6 @@ def home():
     if 'user' not in session:
         return redirect(url_for('login'))
         
-    # Read directly from the persistent database
     current_users = get_live_count()
     return render_template('home.html', total_users=current_users)
 
@@ -181,9 +188,9 @@ def add_idea():
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        topic = request.form['topic']
-        idea = request.form['idea']
-        contact = request.form['contact']
+        topic = request.form.get('topic', '')
+        idea = request.form.get('idea', '')
+        contact = request.form.get('contact', '')
         user = session['user']
 
         with sqlite3.connect('database.db') as conn:
@@ -213,5 +220,6 @@ def view_ideas():
 
 
 if __name__ == '__main__':
+    # Fixed deployment dynamic port matching
     port = int(os.environ.get("PORT", 81))
     app.run(host='0.0.0.0', port=port, debug=True)
