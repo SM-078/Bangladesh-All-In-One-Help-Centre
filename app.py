@@ -60,14 +60,12 @@ def login():
             flash("Logged in successfully!", "success")
             
             # --- FIXED COUNTER LOGIC ---
-            # 1. First, read what the current count safely is
             try:
                 with open("counter.txt", "r") as f:
                     current_count = int(f.read().strip())
             except Exception:
-                current_count = 0  # Start at 0 if file doesn't exist
+                current_count = 0  
             
-            # 2. Add 1 and save it back
             with open("counter.txt", "w") as f: 
                 f.write(str(current_count + 1))
             # ---------------------------
@@ -79,7 +77,6 @@ def login():
     return render_template('login.html')
 
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -88,7 +85,6 @@ def register():
 
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
-            # Check if the username already exists
             c.execute("SELECT * FROM users WHERE username=?", (username,))
             existing_user = c.fetchone()
 
@@ -114,7 +110,6 @@ def home():
     if 'user' not in session:
         return redirect(url_for('login'))
         
-    # Get the live text counter and pass it directly to home.html
     current_users = get_live_count()
     return render_template('home.html', total_users=current_users)
 
@@ -168,7 +163,6 @@ def quick_contact():
     return render_template('quick_contact.html')
 
 
-# --- Add New Ideas Page ---
 @app.route('/add_idea', methods=['GET', 'POST'])
 def add_idea():
     if 'user' not in session:
@@ -207,4 +201,6 @@ def view_ideas():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=81, debug=True)
+    # Dynamically find the port Render wants to use, fallback to 81 only for local laptop testing
+    port = int(os.environ.get("PORT", 81))
+    app.run(host='0.0.0.0', port=port, debug=True)
