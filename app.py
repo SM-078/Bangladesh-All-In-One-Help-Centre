@@ -1,9 +1,19 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with something secure
 
+# --- Safe Counter Helper Function ---
+def get_live_count():
+    try:
+        if os.path.exists("counter.txt"):
+            with open("counter.txt", "r") as f:
+                return int(f.read().strip())
+    except Exception:
+        pass
+    return 0
 
 # --- Database Setup ---
 def init_db():
@@ -23,6 +33,9 @@ def init_db():
                     )''')
         conn.commit()
 
+# Run database creation automatically when script starts up
+init_db()
+
 
 # --- Routes ---
 @app.route('/')
@@ -35,36 +48,24 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             c.execute("SELECT * FROM users WHERE username=? AND password=?",
                       (username, password))
             user = c.fetchone()
-            
         if user:
             session['user'] = username
             flash("Logged in successfully!", "success")
             
-            # --- FIXED COUNTER LOGIC ---
-            # 1. First, read what the current count safely is
-            try:
-                with open("counter.txt", "r") as f:
-                    current_count = int(f.read().strip())
-            except Exception:
-                current_count = 0  # Start at 0 if file doesn't exist
-            
-            # 2. Add 1 and save it back
+            # --- SAFE LOGIN INCREMENT ---
+            current_count = get_live_count()
             with open("counter.txt", "w") as f: 
                 f.write(str(current_count + 1))
-            # ---------------------------
-            
+                
             return redirect(url_for('home'))
         else:
             flash("Incorrect username or password", "error")
-            
     return render_template('login.html')
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -90,7 +91,6 @@ def register():
     return render_template('register.html')
 
 
-
 @app.route('/logout')
 def logout():
     session.pop('user', None)
@@ -99,22 +99,20 @@ def logout():
 
 @app.route('/home')
 def home():
-    try:
-        # Open the counter file safely
-        with open("counter.txt", "r") as f:
-            current_users = int(f.read().strip())
-    except Exception:
-        # If the file doesn't exist yet, start at 0
-        current_users = 0
+    if 'user' not in session:
+        return redirect(url_for('login'))
         
-    # Send the number cleanly to your HTML page without crashing
+    # Get the live text counter and pass it directly to home.html
+    current_users = get_live_count()
     return render_template('home.html', total_users=current_users)
+
 
 @app.route('/accident_support')
 def accident_support(): 
     if 'user' not in session:
         return redirect(url_for('login'))
     return render_template('accident_support.html') 
+
 
 @app.route('/emergency_contact')
 def emergency_contact():
@@ -183,7 +181,6 @@ def add_idea():
     return render_template('add_idea.html', submitted=False)
 
 
-
 @app.route('/view_ideas')
 def view_ideas():
     if 'user' not in session:
@@ -197,9 +194,5 @@ def view_ideas():
     return render_template('view_ideas.html', ideas=ideas)
 
 
-
-# --- Initialize DB ---
 if __name__ == '__main__':
-    init_db()
     app.run(host='0.0.0.0', port=81, debug=True)
-
