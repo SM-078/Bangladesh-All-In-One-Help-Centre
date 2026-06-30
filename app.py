@@ -9,13 +9,11 @@ app.secret_key = 'your_secret_key'  # Replace with something secure
 def init_db():
     with sqlite3.connect('database.db') as conn:
         c = conn.cursor()
-        # 1. Users Table
         c.execute('''CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         username TEXT UNIQUE,
                         password TEXT
                     )''')
-        # 2. Ideas Table
         c.execute('''CREATE TABLE IF NOT EXISTS ideas (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         user TEXT,
@@ -23,28 +21,24 @@ def init_db():
                         idea TEXT,
                         contact TEXT
                     )''')
-        # 3. Permanent Counter Table
         c.execute('''CREATE TABLE IF NOT EXISTS site_stats (
                         metric TEXT UNIQUE,
                         value INTEGER
                     )''')
-        # Initialize counter row at 0 safely
         c.execute("INSERT OR IGNORE INTO site_stats (metric, value) VALUES ('login_count', 0)")
         conn.commit()
 
-# Run database schema verification when app boots
 init_db()
 
-# --- FIXED: Explicit Database Value Extraction ---
+# --- FIXED: Correctly Unpacking Database Tuple ---
 def get_live_count():
     try:
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             c.execute("SELECT value FROM site_stats WHERE metric='login_count'")
             row = c.fetchone()
-            # FIXED: row is a tuple like (5,). Extract the first element explicitly.
             if row is not None:
-                return int(row[0])
+                return row[0]  # FIXED: Accessing the number inside the tuple correctly using [0]
     except Exception:
         pass
     return 0
@@ -67,12 +61,16 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Clear out any old lingering session states to fix the automatic login bug
+    if request.method == 'GET':
+        session.pop('user', None)
+
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
         
         if not username or not password:
-            flash("Please fill out all credentials field fields.", "error")
+            flash("Please fill out all credential fields.", "error")
             return render_template('login.html')
             
         with sqlite3.connect('database.db') as conn:
@@ -80,7 +78,6 @@ def login():
             c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
             user = c.fetchone()
             
-        # FIXED: Only processes success flag strictly if user credentials map to db records
         if user is not None:
             session['user'] = username
             flash("Logged in successfully!", "success")
@@ -220,6 +217,6 @@ def view_ideas():
 
 
 if __name__ == '__main__':
-    # Fixed deployment dynamic port matching
     port = int(os.environ.get("PORT", 81))
     app.run(host='0.0.0.0', port=port, debug=True)
+
