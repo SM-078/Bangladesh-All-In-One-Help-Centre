@@ -35,20 +35,36 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             c.execute("SELECT * FROM users WHERE username=? AND password=?",
                       (username, password))
             user = c.fetchone()
+            
         if user:
             session['user'] = username
             flash("Logged in successfully!", "success")
-            # Add this single line right after a successful login check
-            with open("counter.txt", "w") as f: f.write(str(current_users + 1))
+            
+            # --- FIXED COUNTER LOGIC ---
+            # 1. First, read what the current count safely is
+            try:
+                with open("counter.txt", "r") as f:
+                    current_count = int(f.read().strip())
+            except Exception:
+                current_count = 0  # Start at 0 if file doesn't exist
+            
+            # 2. Add 1 and save it back
+            with open("counter.txt", "w") as f: 
+                f.write(str(current_count + 1))
+            # ---------------------------
+            
             return redirect(url_for('home'))
         else:
             flash("Incorrect username or password", "error")
+            
     return render_template('login.html')
+
 
 
 @app.route('/register', methods=['GET', 'POST'])
