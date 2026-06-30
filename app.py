@@ -43,6 +43,8 @@ def login():
         if user:
             session['user'] = username
             flash("Logged in successfully!", "success")
+            # Add this single line right after a successful login check
+            with open("counter.txt", "w") as f: f.write(str(current_users + 1))
             return redirect(url_for('home'))
         else:
             flash("Incorrect username or password", "error")
@@ -81,9 +83,16 @@ def logout():
 
 @app.route('/home')
 def home():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    return render_template('home.html')
+    try:
+        # Open the counter file safely
+        with open("counter.txt", "r") as f:
+            current_users = int(f.read().strip())
+    except Exception:
+        # If the file doesn't exist yet, start at 0
+        current_users = 0
+        
+    # Send the number cleanly to your HTML page without crashing
+    return render_template('home.html', total_users=current_users)
 
 @app.route('/accident_support')
 def accident_support(): 

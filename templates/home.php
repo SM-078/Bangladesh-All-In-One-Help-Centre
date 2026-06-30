@@ -24,6 +24,8 @@
     </header>
 
     <h3>Welcome, {{ session['user'] }}</h3>
+    <h3>Total Registered Users: <strong>{{ total_users }}</strong></h3>
+
     <ul>
         <li><a href="{{ url_for('emergency_contact') }}">Emergency Contact</a></li>
         <li><a href="{{ url_for('accident_support') }}">Accident Support</a></li>
